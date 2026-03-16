@@ -61,7 +61,3 @@ class FollowSerializer(serializers.ModelSerializer):
                 {'following': ['Вы уже подписаны на этого автора.']}
             )
         return attrs
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        return Follow.objects.create(user=user, **validated_data)

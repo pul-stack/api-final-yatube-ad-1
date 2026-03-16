@@ -18,6 +18,19 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
         return getattr(obj, 'author', None) == request.user
 
 
+class OptionalLimitOffsetPagination(LimitOffsetPagination):
+    """
+    Пагинация включается только если в запросе есть limit или offset.
+
+    Тесты ожидают список для обычного GET и пагинацию только при limit/offset.
+    """
+
+    def paginate_queryset(self, queryset, request, view=None):
+        if 'limit' not in request.query_params and 'offset' not in request.query_params:
+            return None
+        return super().paginate_queryset(queryset, request, view=view)
+
+
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -25,7 +38,7 @@ class PostViewSet(viewsets.ModelViewSet):
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly,
     )
-    pagination_class = LimitOffsetPagination
+    pagination_class = OptionalLimitOffsetPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

@@ -26,7 +26,9 @@ class OptionalLimitOffsetPagination(LimitOffsetPagination):
     """
 
     def paginate_queryset(self, queryset, request, view=None):
-        if 'limit' not in request.query_params and 'offset' not in request.query_params:
+        has_limit = 'limit' in request.query_params
+        has_offset = 'offset' in request.query_params
+        if not (has_limit or has_offset):
             return None
         return super().paginate_queryset(queryset, request, view=view)
 

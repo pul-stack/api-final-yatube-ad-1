@@ -50,7 +50,6 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (permissions.AllowAny,)
 
 
-class FollowViewSet(viewsets.ModelViewSet):
 class FollowViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
